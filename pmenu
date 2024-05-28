@@ -587,7 +587,8 @@ function proxy() {
     echo -e "\033[1;31m[\033[1;34m01\033[1;31m] \033[1;37m• \033[1;33mINSTALAR"
     echo -e "\033[1;31m[\033[1;34m02\033[1;31m] \033[1;37m• \033[1;33mDESINSTALAR"
     echo -e "\033[1;31m[\033[1;34m03\033[1;31m] \033[1;37m• \033[1;33mABRIR PORTAS"
-    echo -e "\033[1;31m[\033[1;34m04\033[1;31m] \033[1;37m• \033[1;33mFECHAR PORTAS"
+    echo -e "\033[1;31m[\033[1;34m04\033[1;31m] \033[1;37m• \033[1;33mABRIR PORTAS SSL"
+    echo -e "\033[1;31m[\033[1;34m05\033[1;31m] \033[1;37m• \033[1;33mFECHAR PORTAS"
     echo -e "\033[1;31m[\033[1;34m00\033[1;31m] \033[1;37m• \033[1;31mSAIR\033[0m"
     echo -e ""
 
@@ -624,6 +625,18 @@ function proxy() {
             proxy
         fi
     elif [[ "$resposta" = '4' ]]; then
+        echo "Digite o número da porta SSL:"
+        read -p "Porta: " porta
+        if screen -ls | grep -q "\.$porta\.proxy"; then
+            echo "A porta $porta já está ativada."
+        else
+            screen -dmS $porta.proxy proxy --https --port $porta --cert /root/cert.pem --response LOCKED-SSL
+            echo "A porta $porta foi ativada com sucesso."
+            clear
+            sleep 2
+            proxy
+        fi     
+    elif [[ "$resposta" = '5' ]]; then
         echo "Digite o número da porta a ser desativada:"
         read -p "Porta: " porta
         if screen -ls | grep -q "\.$porta\.proxy"; then
